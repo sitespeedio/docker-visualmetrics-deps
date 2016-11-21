@@ -24,7 +24,9 @@ RUN apt-get update -y && apt-get install -y \
   pip install pyssim
 
 # Install a static version of FFMPEG
-RUN wget http://johnvansickle.com/ffmpeg/releases/ffmpeg-release-64bit-static.tar.xz && \
+# Break the build if the version doesn't match the expected, to avoid surprise upgrades.
+RUN wget -q http://johnvansickle.com/ffmpeg/releases/ffmpeg-release-64bit-static.tar.xz && \
   tar xf ffmpeg-release-64bit-static.tar.xz && \
-  mv ffmpeg*/ffmpeg /usr/bin/ && \
-  rm ffmpeg-release-64bit-static.tar.xz
+  mv ffmpeg-*-64bit-static/ffmpeg /usr/bin/ && \
+  ffmpeg -version | grep -q 'ffmpeg version 3.2-static' && \
+  rm -r ffmpeg-*
