@@ -33,7 +33,8 @@ RUN apt-get update -y && apt-get install build-essential -y && apt-get build-dep
   && make install \
   && cd .. \
   && rm ImageMagick-6.9.7-1.tar.gz \
-  && rm -fR ImageMagick-6.9.7-1
+  && rm -fR ImageMagick-6.9.7-1  \
+  && apt-get --purge autoremove build-essential
 
 # Install a static version of FFMPEG
 RUN wget http://johnvansickle.com/ffmpeg/releases/ffmpeg-release-64bit-static.tar.xz && \
