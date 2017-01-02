@@ -2,7 +2,6 @@ FROM sitespeedio/node:ubuntu16.04-nodejs6.9.1
 
 # Lets install all dependencies for VisualMetrics
 RUN apt-get update -y && apt-get install -y \
-  imagemagick \
   ipython \
   ipython-notebook \
   libjpeg-dev \
@@ -22,6 +21,16 @@ RUN apt-get update -y && apt-get install -y \
   pip install --upgrade pip && \
   pip install --upgrade setuptools && \
   pip install pyssim
+
+# Install imagemagick, we need at least 6.9.7-1 for firstVisualChange to work correctly
+# see https://github.com/WPO-Foundation/visualmetrics/issues/20
+RUN apt-get update -y && apt-get install build-essential checkinstall -y && apt-get build-dep imagemagick -y \
+  && wget http://www.imagemagick.org/download/ImageMagick-6.9.7-1.tar.gz \
+  && tar xzf ImageMagick-6.9.7-1.tar.gz  \
+  && cd ImageMagick-6.9.7-1 \
+  && ./configure \
+  && make \
+  && make install
 
 # Install a static version of FFMPEG
 RUN wget http://johnvansickle.com/ffmpeg/releases/ffmpeg-release-64bit-static.tar.xz && \
