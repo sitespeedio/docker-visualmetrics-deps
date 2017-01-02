@@ -36,7 +36,7 @@ RUN apt-get update -y && \
   cd .. && \
   rm ImageMagick-6.9.7-1.tar.gz && \
   rm -fR ImageMagick-6.9.7-1 && \
-  apt-get --purge autoremove build-essential && \
+  apt-get --purge autoremove build-essential -y && \
   apt-get clean autoclean && \
   rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
