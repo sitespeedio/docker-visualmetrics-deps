@@ -24,13 +24,16 @@ RUN apt-get update -y && apt-get install -y \
 
 # Install imagemagick, we need at least 6.9.7-1 for firstVisualChange to work correctly
 # see https://github.com/WPO-Foundation/visualmetrics/issues/20
-RUN apt-get update -y && apt-get install build-essential checkinstall -y && apt-get build-dep imagemagick -y \
+RUN apt-get update -y && apt-get install build-essential -y && apt-get build-dep imagemagick -y \
   && wget http://www.imagemagick.org/download/ImageMagick-6.9.7-1.tar.gz \
   && tar xzf ImageMagick-6.9.7-1.tar.gz  \
   && cd ImageMagick-6.9.7-1 \
   && ./configure \
   && make \
-  && make install
+  && make install \
+  && cd .. \
+  && rm ImageMagick-6.9.7-1.tar.gz \
+  && rm -fR ImageMagick-6.9.7-1
 
 # Install a static version of FFMPEG
 RUN wget http://johnvansickle.com/ffmpeg/releases/ffmpeg-release-64bit-static.tar.xz && \
