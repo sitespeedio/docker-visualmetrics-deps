@@ -24,12 +24,14 @@ RUN apt-get update -y && apt-get install -y \
 
 # Install imagemagick, we need at least 6.9.7-1 for firstVisualChange to work correctly
 # see https://github.com/WPO-Foundation/visualmetrics/issues/20
+# This is inspired by https://hub.docker.com/r/starefossen/node-imagemagick/
+
 ENV MAGICK_URL "http://imagemagick.org/download/releases"
 ENV MAGICK_VERSION 6.9.7-2
 
-RUN apt-get update -y && apt-get install build-essential -y curl
-
-RUN gpg --keyserver pool.sks-keyservers.net --recv-keys 8277377A \
+RUN apt-get update -y && \
+ apt-get install build-essential curl -y && \
+ gpg --keyserver pool.sks-keyservers.net --recv-keys 8277377A \
   && apt-get update -y \
   && apt-get install -y --no-install-recommends \
     libpng-dev libjpeg-dev libtiff-dev libopenjpeg-dev \
@@ -39,8 +41,6 @@ RUN gpg --keyserver pool.sks-keyservers.net --recv-keys 8277377A \
   && curl -SLO "${MAGICK_URL}/ImageMagick-${MAGICK_VERSION}.tar.xz.asc" \
   && gpg --verify "ImageMagick-${MAGICK_VERSION}.tar.xz.asc" "ImageMagick-${MAGICK_VERSION}.tar.xz" \
   && tar xf "ImageMagick-${MAGICK_VERSION}.tar.xz" \
-
-# http://www.imagemagick.org/script/advanced-unix-installation.php#configure
   && cd "ImageMagick-${MAGICK_VERSION}" \
   && ./configure \
     --disable-static \
@@ -90,13 +90,11 @@ RUN gpg --keyserver pool.sks-keyservers.net --recv-keys 8277377A \
     --without-x \
     # disable XML support
     --without-xml \
-
   && make \
   && make install \
   && ldconfig /usr/local/lib \
-
   && apt-get -y autoclean \
-  && apt-get -y autoremove \
+  && apt-get --purge autoremove curl build-essential -y \
   && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 
